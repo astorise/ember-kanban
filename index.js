@@ -2,5 +2,12 @@
 'use strict';
 
 module.exports = {
-  name: 'ember-kanban'
+  name: 'ember-kanban',
+  included: function(app) {
+    this._super.included(app);
+  },
+  isDevelopingAddon: function() {
+    return true;
+  }
 };
+

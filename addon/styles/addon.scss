@@ -1,0 +1,34 @@
+.kb-board {
+    height: 100%;
+    width: 100%;
+    background-color: yellow;
+    .kb-columns {
+        display: flex;
+        background-color: red;
+        margin: 2px;
+        overflow-x: scroll;
+        .kb-column {
+            margin: 2px;
+            width: 100%;
+            min-width: 200px;
+            background-color: blue;
+            .kb-cards {
+                min-height: 200px;
+                display: flex;
+                flex-direction: column;
+                .kb-card {
+                    height: 100%;
+                    border: 1px solid white;
+                    /*padding: 2px;*/
+                    margin: 2px;
+                }
+            }
+        }
+    }
+    &.hidden {
+        display: none;
+    }
+}
+.dragging {
+    background-color: blue;
+}

@@ -1,0 +1,12 @@
+<h2>{{column.name}}</h2>
+<a href="" {{action 'addCard'}}>Add Card</a>
+{{kb-delete-button click=(action 'deleteColumn')}}
+<h4>{{column.board.id}}</h4>
+<div class="kb-cards column-sortable">
+  {{#each column.sortedCards as |card|}}
+    {{kb-card card=card}}
+    {{#kb-card card=card as |card|}}
+      <h1>{{card.id}}</h1>
+    {{/kb-card}}
+  {{/each}}
+</div>

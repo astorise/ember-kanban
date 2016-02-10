@@ -1,3 +1,9 @@
-<h2 id="title">Welcome to Ember</h2>
-
+<h2 id="title">Welcome to Ember-Kanban</h2>
+<button {{action 'createBoard'}}>Create Board</button>
+<ul>
+  {{#each boards as |board|}}
+    <li>{{board.name}} ({{board.columns.length}})<a href='' {{action 'viewBoard' board}}>view</a>Columns Count: {{board.columns.length}} </li>
+  {{/each}}
+</ul>
+{{kb-board board=currentBoard columnModel='column' cardModel='card'}}
 {{outlet}}

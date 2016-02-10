@@ -1,0 +1,6 @@
+{{#if hasBlock}}
+  {{yield card}}
+{{else}}
+  <h3>{{card.name}} {{card.id}} - {{card.column.name}}</h3>
+  {{kb-delete-button click=(action 'deleteCard')}}
+{{/if}}

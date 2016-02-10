@@ -1,0 +1,1 @@
+export { default } from 'ember-kanban/components/test-comp/component';
