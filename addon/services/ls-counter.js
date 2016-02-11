@@ -1,7 +1,6 @@
 import Ember from 'ember';
 
-export
-default Ember.Service.extend({
+export default Ember.Service.extend({
   count: function() {
     var count = localStorage.getItem('counter_count') || 0;
     count++;
@@ -9,4 +8,3 @@ default Ember.Service.extend({
     return count;
   }.property().volatile(),
 });
-

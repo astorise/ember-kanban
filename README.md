@@ -1,7 +1,10 @@
 # Ember-kanban
 
 This README outlines the details of collaborating on this Ember addon.
-
+* install addon
+* install jquery ui
+* reference bootstrap
+* add hooks and aliases to models
 ## Installation
 
 * `git clone` this repository

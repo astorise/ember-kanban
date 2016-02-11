@@ -6,46 +6,66 @@ export
 default Ember.Component.extend(DragDrop, {
   layout,
   store: Ember.inject.service(),
-  counter: Ember.inject.service(),
-  classNames: ['panel','panel-primary','kb-column', 'item'],
+    counter: Ember.inject.service('ls-counter'),
+    classNames: ['panel', 'panel-primary', 'kb-column'],
 
-  attributeBindings: ['data-id'],
-  'data-id': function() {
-    return this.get('column.id');
-  }.property('column.id'),
+    //todo remove this
+    sortableClass: function() {
+      return `column-sortable`;
+    }.property(),
 
-  didInsertElement() {
-    this.makeSortable({
-      parentModel: 'column',
-      childModel: 'card',
-      connected: true
-    });
-  },
+    sortChildren: function() {
+      this.get('column.children').then(cards => {
+        this.set('sortedCards', cards.sortBy('order'));
+      });
+    }.observes('column.children.[].order').on('init'),
+
+    attributeBindings: ['data-id'],
+    'data-id': function() {
+      return this.get('column.id');
+    }.property('column.id'),
+
+    didInsertElement() {
+      this.makeSortable({
+        parentModel: 'column',
+        childSelector: '.kb-card',
+        childModel: this.get('cardModel'),
+        connected: true
+      });
+    },
 
 
-  actions: {
-    deleteColumn() {
-        var column = this.get('column');
-        this.get('column.board').then(board => {
-          board.get('columns').removeObject(column);
-          board.save().then(() => {
-            column.destroyRecord();
+    actions: {
+      deleteColumn() {
+          var column = this.get('column');
+          if (this.attrs.deleteColumn) {
+            return this.attrs.deleteColumn(column);
+          }
+          this.get(`column.parent`).then(board => {
+            board.get('children').removeObject(column);
+            board.save().then(() => {
+              column.destroyRecord();
+              //board.reload();
+            });
           });
+        },
 
-        });
-      },
-      addCard() {
-        this.get('column.cards').then(cards => {
-          var max = cards.length ? cards.mapBy('order').sort().reverse()[0] + 1 : 1;
-          var card = this.get('store').createRecord(this.get('cardModel'), {
-            name: `Card ${this.get('counter.count')}`,
-            order: max,
+        addCard() {
+          var column = this.get('column');
+          if (this.attrs.addCard) {
+            return this.attrs.addCard(column);
+          }
+          this.beginPropertyChanges();
+          this.get('column.children').then(cards => {
+            var max = cards.length ? cards.mapBy('order').sort().reverse()[0] + 1 : 1;
+            var card = this.get('store').createRecord(this.get('cardModel'), {
+              name: `Card ${this.get('counter.count')}`,
+              order: max,
+            });
+            cards.pushObject(card);
+            column.save().then(c => c.reload().finally(() => this.endPropertyChanges()));
           });
-          this.get('column.cards').pushObject(card);
-          this.get('column').save();
-
-        })
-      }
-  }
+        }
+    }
 });
 

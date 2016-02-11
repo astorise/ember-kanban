@@ -1,6 +1,6 @@
 import { moduleFor, test } from 'ember-qunit';
 
-moduleFor('service:counter', 'Unit | Service | counter', {
+moduleFor('service:ls-counter', 'Unit | Service | ls counter', {
   // Specify the other units that are required for this test.
   // needs: ['service:foo']
 });

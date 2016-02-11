@@ -1,9 +1,13 @@
 <h2>{{board.name}}
 {{kb-delete-button click=(action 'deleteBoard') pullRight=true}}
-{{kb-add-button click=(action 'addColumn') pullRight=true}}
 </h2>
-<div class="kb-columns board-sortable">
-  {{#each board.sortedColumns as |column|}}
-    {{kb-column column=column cardModel=cardModel}}
+<div class="kb-columns {{sortableClass}}">
+  {{#each sortedColumns as |column|}}
+    {{kb-column column=column boardModel=boardModel cardModel=cardModel columnModel=columnModel}}
   {{/each}}
+  <div>
+    {{#kb-add-button click=(action 'addColumn')}}
+      <i class='glyphicon glyphicon-plus'></i> New
+    {{/kb-add-button}}
+  </div>
 </div>

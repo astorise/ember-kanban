@@ -7,41 +7,60 @@ export
 default Ember.Component.extend(DragDrop, {
   layout,
   store: Ember.inject.service(),
-  counter: Ember.inject.service(),
-  classNames: ['kb-board'],
-  classNameBindings: ['hidden'],
+    sortableClass: function() {
+      return `board-sortable`;
+    }.property(),
 
-  hidden: function() {
-    return !this.get('board');
-  }.property('board'),
+    sortChildren: function() {
+      this.get('board.children').then(columns => {
+        this.set('sortedColumns', columns.sortBy('order'));
+      });
+    }.observes('board.children.[].order').on('init'),
 
-  didInsertElement() {
-    this.makeSortable({
-      parentModel: 'board',
-      childModel: 'column',
-      connected: true
-    });
-  },
+    counter: Ember.inject.service('ls-counter'),
+    classNames: ['kb-board'],
+    classNameBindings: ['hidden'],
 
-  actions: {
+    hidden: function() {
+      return !this.get('board');
+    }.property('board'),
 
-    deleteBoard() {
-        this.get('board').destroyRecord();
-      },
+    didInsertElement() {
+      this.makeSortable({
+        parentModel: 'board',
+        childSelector:'.kb-column',
+        childModel: this.get('columnModel'),
+        connected: true
+      });
+    },
 
-      addColumn() {
-        var board = this.get('board');
+    actions: {
 
-        board.get('columns').then(columns => {
-          var max = columns.length ? columns.mapBy('order').sort().reverse()[0] + 1 : 1;
-          var newColumn = this.get('store').createRecord(this.get('columnModel'), {
-            name: `Column ${this.get('counter.count')}`,
-            order: max,
+      deleteBoard() {
+          var board = this.get('board');
+          if (this.attrs.deleteBoard) {
+            return this.attrs.deleteBoard(board);
+          }
+          board.destroyRecord();
+        },
+
+        addColumn() {
+          var board = this.get('board');
+          if (this.attrs.addColumn) {
+            return this.attrs.addColumn(board);
+          }
+
+          this.beginPropertyChanges();
+          board.get('children').then(columns => {
+            var max = columns.length ? columns.mapBy('order').sort().reverse()[0] + 1 : 1;
+            var newColumn = this.get('store').createRecord(this.get('columnModel'), {
+              name: `Column ${this.get('counter.count')}`,
+              order: max,
+            });
+            columns.pushObject(newColumn);
+            board.save().then(b => b.reload()).finally(() => this.endPropertyChanges());
           });
-          columns.pushObject(newColumn);
-          board.save();
-        });
-      }
-  }
+        }
+    }
 });
 
