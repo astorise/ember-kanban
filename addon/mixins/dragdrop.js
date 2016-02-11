@@ -24,6 +24,12 @@ default Ember.Mixin.create({
     var isReceiving = false;
     this.$(this.get('selector')).sortable({
       connectWith: this.get('connectWith'),
+      start(event, ui) {
+        ui.item.addClass('kb-dragging');
+      },
+      stop(event, ui) {
+        ui.item.removeClass('kb-dragging');
+      },
       receive(event, ui) {
         isReceiving = true;
         var itemId = ui.item.data('id');
@@ -50,11 +56,11 @@ default Ember.Mixin.create({
 
   updateIndexes() {
     var {
-      parentModel, childModels
-    } = this.getProperties('parentModel', 'childModels');
+      childModel, parentModel, childModels
+    } = this.getProperties('childModel', 'parentModel', 'childModels');
     this.beginPropertyChanges();
     var items = this.get(`${parentModel}.${childModels}`);
-    this.$().find('.item:not(.item .item)').each(function(index) {
+    this.$(`.kb-${childModel}`).each(function(index) {
       var id = $(this).data('id');
       var item = items.findBy('id', id);
       if (item) {

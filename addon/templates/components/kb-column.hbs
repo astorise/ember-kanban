@@ -1,0 +1,10 @@
+<div class='panel-heading'>{{column.name}}
+{{kb-delete-button click=(action 'deleteColumn') pullRight=true}}
+{{kb-add-button click=(action 'addCard') pullRight=true}}
+</div>
+<div class="panel-body kb-cards column-sortable">
+  {{kb-test}}
+  {{#each column.sortedCards as |card|}}
+    {{kb-card card=card}}
+  {{/each}}
+</div>

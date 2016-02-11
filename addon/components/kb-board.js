@@ -1,12 +1,13 @@
 import Ember from 'ember';
-import layout from './template';
+import layout from '../templates/components/kb-board';
 
 import DragDrop from 'ember-kanban/mixins/dragdrop';
 
 export
 default Ember.Component.extend(DragDrop, {
   layout,
-  store: Ember.inject.service('store'),
+  store: Ember.inject.service(),
+  counter: Ember.inject.service(),
   classNames: ['kb-board'],
   classNameBindings: ['hidden'],
 
@@ -34,7 +35,7 @@ default Ember.Component.extend(DragDrop, {
         board.get('columns').then(columns => {
           var max = columns.length ? columns.mapBy('order').sort().reverse()[0] + 1 : 1;
           var newColumn = this.get('store').createRecord(this.get('columnModel'), {
-            name: `Column ${this.get('board.columns.length') + 1}`,
+            name: `Column ${this.get('counter.count')}`,
             order: max,
           });
           columns.pushObject(newColumn);

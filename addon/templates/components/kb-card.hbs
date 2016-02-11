@@ -1,0 +1,16 @@
+{{#if hasBlock}}
+  {{yield card}}
+{{else}}
+    <div class="panel-heading">
+      {{card.name}}
+      {{kb-delete-button click=(action 'deleteCard') pullRight=true}}
+    </div>
+    <div class="panel-body">
+      <ul>
+        <li>id: {{card.id}}</li>
+        <li>column: {{card.column.name}}</li>
+        <li>order: {{card.order}}</li>
+      </ul>
+
+    </div>
+{{/if}}
