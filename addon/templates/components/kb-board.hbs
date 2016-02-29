@@ -1,7 +1,7 @@
 <h2>{{board.name}}
 {{kb-delete-button click=(action 'deleteBoard') pullRight=true}}
 </h2>
-<div class="kb-columns {{sortableClass}}">
+<div class="kb-columns">
   {{#each sortedColumns as |column|}}
     {{kb-column column=column boardModel=boardModel cardModel=cardModel columnModel=columnModel}}
   {{/each}}

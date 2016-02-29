@@ -1,11 +1,12 @@
 <div class='panel-heading'>{{column.name}}
 {{kb-delete-button click=(action 'deleteColumn') pullRight=true}}
 </div>
-<div class="panel-body kb-cards {{sortableClass}}">
+<div class="panel-body kb-cards">
   {{#each sortedCards as |card|}}
     {{kb-card card=card boardModel=boardModel cardModel=cardModel columnModel=columnModel}}
   {{/each}}
+
+</div>
   {{#kb-add-button click=(action 'addCard') class='btn-block'}}
     <i class='glyphicon glyphicon-plus'></i> New
   {{/kb-add-button}}
-</div>

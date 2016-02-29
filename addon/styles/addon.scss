@@ -25,7 +25,17 @@
     }
 }
 .kb-dragging {
-    -ms-transform: rotate(3deg); /* IE 9 */
-    -webkit-transform: rotate(3deg); /* Chrome, Safari, Opera */
+    -ms-transform: rotate(3deg);
+    /* IE 9 */
+    -webkit-transform: rotate(3deg);
+    /* Chrome, Safari, Opera */
     transform: rotate(3deg);
+}
+.kb-drag-over {
+    border: 1px solid red !important;
+}
+.kb-ghost{
+  border: 3px solid orange !important;
+  transform: rotate(3deg);
+  opacity: 0.5;
 }

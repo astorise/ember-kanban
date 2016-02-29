@@ -6,34 +6,65 @@ export
 default Ember.Component.extend(DragDrop, {
   layout,
   store: Ember.inject.service(),
+    //todo remove this dependency
     counter: Ember.inject.service('ls-counter'),
     classNames: ['panel', 'panel-primary', 'kb-column'],
 
-    //todo remove this
-    sortableClass: function() {
-      return `column-sortable`;
-    }.property(),
-
     sortChildren: function() {
       this.get('column.children').then(cards => {
+        console.log('**************** calc sortedCards');
         this.set('sortedCards', cards.sortBy('order'));
       });
-    }.observes('column.children.[].order').on('init'),
+    }.observes('column.children.[]').on('init'),
+    //sortBy: ['order'],
+    //sortedCards: Ember.computed.sort('column.children', 'sortBy'),
 
     attributeBindings: ['data-id'],
     'data-id': function() {
       return this.get('column.id');
     }.property('column.id'),
 
-    didInsertElement() {
-      this.makeSortable({
-        parentModel: 'column',
-        childSelector: '.kb-card',
-        childModel: this.get('cardModel'),
-        connected: true
+    updateCardPositions() {
+      var cardModel = this.get('cardModel');
+      var columnModel = this.get('columnModel');
+      var promises = [];
+      this.$('.kb-card').each((index, cardEl) => {
+        let cardId = $(cardEl).data('id');
+        promises.push(this.get('store').find(cardModel, cardId).then(card => {
+          card.set('order', index);
+        }));
       });
+      return promises;
     },
 
+    didInsertElement() {
+      var self = this;
+      this.makeSortable({
+        parentModel: 'column',
+        parentId: this.get('column.id'),
+        childSelector: '.kb-card',
+        sortableContainer: '.kb-cards',
+        childModel: this.get('cardModel'),
+        connected: true,
+
+        onAdd(evt) {
+          self.beginPropertyChanges();
+          self.set('promisesForAdding', self.updateCardPositions());
+          Ember.RSVP.all(self.get('promisesForAdding')).then(() => {
+            var cardId = $(evt.item).data('id');
+            var cardModel = this.get('cardModel');
+            self.moveItem(cardId, self.get('column'), cardModel).then(() => {
+              self.endPropertyChanges();
+            });
+          });
+        },
+        onUpdate: (evt) => {
+          Ember.RSVP.all(self.updateCardPositions()).then(() => {
+            self.get('column').save();
+          });
+        },
+      });
+    },
 
     actions: {
       deleteColumn() {
@@ -45,7 +76,6 @@ default Ember.Component.extend(DragDrop, {
             board.get('children').removeObject(column);
             board.save().then(() => {
               column.destroyRecord();
-              //board.reload();
             });
           });
         },

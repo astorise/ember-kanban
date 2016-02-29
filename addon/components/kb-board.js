@@ -7,10 +7,6 @@ export
 default Ember.Component.extend(DragDrop, {
   layout,
   store: Ember.inject.service(),
-    sortableClass: function() {
-      return `board-sortable`;
-    }.property(),
-
     sortChildren: function() {
       this.get('board.children').then(columns => {
         this.set('sortedColumns', columns.sortBy('order'));
@@ -26,12 +22,12 @@ default Ember.Component.extend(DragDrop, {
     }.property('board'),
 
     didInsertElement() {
-      this.makeSortable({
-        parentModel: 'board',
-        childSelector:'.kb-column',
-        childModel: this.get('columnModel'),
-        connected: true
-      });
+      //this.makeSortable({
+      //parentModel: 'board',
+      //childSelector: '.kb-column',
+      //childModel: this.get('columnModel'),
+      //connected: true
+      //});
     },
 
     actions: {
