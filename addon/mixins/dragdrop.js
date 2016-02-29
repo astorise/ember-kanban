@@ -21,19 +21,46 @@ default Ember.Mixin.create({
     var sortable = Sortable.create(el, {
       group: this.get('connectWith'),
       animation: 150,
+      handle: '.panel-heading',
       ghostClass: 'kb-ghost',
       chosenClass: 'kb-dragging',
       setData: (dataTransfer, dragEl) => {
         var childId = $(dragEl).data('id');
         dataTransfer.setData(`kb/${self.get('childModel')}`, childId);
       },
-      onAdd() {
-        self.onAdd(...arguments);
+      onAdd(evt) {
+        self.beginPropertyChanges();
+        self.set('promisesForAdding', self.updateChildrenPositions());
+        Ember.RSVP.all(self.get('promisesForAdding')).then(() => {
+          var childId = $(evt.item).data('id');
+          var childModel = self.get('childModel');
+          var parentModel = self.get('parentModel');
+          self.moveItem(childId, self.get(parentModel), childModel).then(() => {
+            self.endPropertyChanges();
+          });
+        });
       },
-      onUpdate() {
-        self.onUpdate(...arguments);
+      onUpdate(evt) {
+        Ember.RSVP.all(self.updateChildrenPositions()).then(() => {
+          var parentModel = self.get('parentModel');
+          self.get(parentModel).save();
+        });
       },
     });
+  },
+
+
+  updateChildrenPositions() {
+    var childModel = this.get('childModel');
+    var childSelector = this.get('childSelector');
+    var promises = [];
+    this.$(childSelector).each((index, cardEl) => {
+      let childId = $(cardEl).data('id');
+      promises.push(this.get('store').find(childModel, childId).then(child => {
+        child.set('order', index);
+      }));
+    });
+    return promises;
   },
 
   moveItem(itemId, newParent, childModel) {

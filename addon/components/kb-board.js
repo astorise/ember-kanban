@@ -11,9 +11,10 @@ default Ember.Component.extend(DragDrop, {
       this.get('board.children').then(columns => {
         this.set('sortedColumns', columns.sortBy('order'));
       });
-    }.observes('board.children.[].order').on('init'),
+    }.observes('board.children.[]').on('init'),
 
     counter: Ember.inject.service('ls-counter'),
+
     classNames: ['kb-board'],
     classNameBindings: ['hidden'],
 
@@ -22,12 +23,13 @@ default Ember.Component.extend(DragDrop, {
     }.property('board'),
 
     didInsertElement() {
-      //this.makeSortable({
-      //parentModel: 'board',
-      //childSelector: '.kb-column',
-      //childModel: this.get('columnModel'),
-      //connected: true
-      //});
+      this.makeSortable({
+        parentModel: 'board',
+        sortableContainer: '.kb-columns',
+        childSelector: '.kb-column',
+        childModel: this.get('columnModel'),
+        connected: false,
+      });
     },
 
     actions: {

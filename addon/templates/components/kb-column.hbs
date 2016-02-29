@@ -1,5 +1,6 @@
-<div class='panel-heading'>{{column.name}}
-{{kb-delete-button click=(action 'deleteColumn') pullRight=true}}
+<div class='panel-heading'>
+  {{column.name}}
+  {{kb-delete-button click=(action 'deleteColumn') pullRight=true}}
 </div>
 <div class="panel-body kb-cards">
   {{#each sortedCards as |card|}}

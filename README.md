@@ -1,3 +1,11 @@
+# IMPORTANT - Pre-Alpha
+This is not ready for use yet, but feel free to play around and checkout the demo at [https://emberkanban.firebaseapp.com/](https://emberkanban.firebaseapp.com/)
+
+# What is this?
+A trello-like kanban implementation using an ember addon.  The idea is that you will be able to simply add this line of code to your web app and have a fully functioning kanban board:
+
+`{{kb-board board=currentProject boardModel='project' columnModel='milestone' cardModel='task'}}`
+
 # Ember-kanban
 
 This README outlines the details of collaborating on this Ember addon.
